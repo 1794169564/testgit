@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "mybatis-3-mapper.dtd" >
+<mapper namespace="com.z.dao.Backend_UserMapper">
+
+	<resultMap type="Backend_User" id="busers">
+		<id property="id" column="id"/>
+		<result property="id" column="id"/>
+		<result property="typeName" column="name"/>
+	</resultMap>
+
+	<select id="findOneBackendUser" resultMap="busers" >
+		<if test="id != null and id != ''">
+			SELECT b.*,d.`valueName` name FROM backend_user b INNER JOIN data_dictionary d 
+			ON b.type = d.valueId 
+			WHERE d.typeCode = 'card'
+			and b.id = #{id}
+		</if>
+	</select>
+	
+	<select id="findBackendUserAll" resultMap="busers">
+			SELECT b.*,d.`valueName` name FROM backend_user b INNER JOIN data_dictionary d 
+			ON b.type = d.valueId 
+			WHERE d.typeCode = 'card'
+	</select>
+	
+	<delete id="deleteBackendUser">
+	 	<if test="id != null and id != ''">
+	 		delete from backend_user where id =#{id}
+	 	</if>
+	</delete>
+	<update id="updateBackendUser" parameterType="Backend_User"> 
+		update backend_user
+		<trim prefix="set" suffixOverrides="," suffix="where id = #{id}" >
+			<if test="name != null and name != ''">name = #{name},</if>
+			<if test="passwprd != null and passwprd != ''">passwprd = #{passwprd},</if>
+			<if test="type != 0">type = #{type},</if>
+			<if test="createTime != null ">createTime = #{createTime},</if>
+		</trim>
+	</update>
+	
+	<insert id="insertBackendUser" parameterType="Backend_User">
+		insert backend_user values(null,#{name},#{password},#{type},#{createTime})
+	</insert>
+</mapper>

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "mybatis-3-mapper.dtd" >
+<mapper namespace="com.z.dao.UserMapper">
+
+	<resultMap type="User" id="users">
+		<id property="id" column="id"/>
+		<result property="id" column="id"/>
+		<result property="creditName" column="name" />
+	</resultMap>
+	
+	<select id="queryUser" resultMap="users">
+		<if test="id != 0">
+		SELECT u.*,d.valueName name FROM USER u INNER JOIN data_dictionary d ON u.credit = d.valueId
+		WHERE d.typeCode ='credit'
+		and u.id = #{id}
+		</if>
+	</select>
+	<select id="queryUserAll" resultMap="users">
+		SELECT u.*,d.valueName name FROM USER u INNER JOIN data_dictionary d ON u.credit = d.valueId
+		WHERE d.typeCode ='credit'
+	</select>
+	<delete id="deleteUser">
+		<if test="id != 0 and id != ''">
+			delete * from user where id = #{id}
+		</if>
+	</delete>
+	<update id="updateUser" parameterType="User">
+		update user
+		<trim prefix="set" suffixOverrides="," suffix="where id = #{id}" >
+			<if test="name != null and name != ''">name = #{name},</if>
+			<if test="sex != 0">sex = #{sex},</if>
+			<if test="age != 0">age = #{age},</if>
+			<if test="money != 0">money = #{money},</if>
+			<if test="regular != 0">regular = #{regular},</if>
+			<if test="idCard != null and idCard != ''">idCard = #{idCard},</if>
+			<if test="password != null and password != ''">password = #{password},</if>
+			<if test="credit != 0">credit = #{credit},</if>
+			address = #{address},
+			<if test="createBy != 0">createBy = #{createBy},</if>
+			<if test="createTime != null and createTime != ''">createTime = #{createTime},</if>
+		</trim>
+	</update>
+	<insert id="insertUser" parameterType="User">
+		insert user values(null,#{name},#{sex},#{age},#{money},#{regular},#{idCard},#{password},#{credit},#{address},#{createBy},#{createTime})
+	</insert>
+</mapper>

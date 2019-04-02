@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "mybatis-3-mapper.dtd" >
+<mapper namespace="com.z.dao.LoanMapper">
+
+	<resultMap type="Loan" id="loans">
+		<id property="id" column="id"/>
+		<result property="id" column="id"/>
+		<result property="userName" column="userName"/>
+		<result property="loanTypeName" column="name"/>
+	</resultMap>
+	<select id="queryLoan" resultMap="loans">
+		<if test="id != 0">
+		SELECT l.*,d.valueName name,u.name userName FROM loan l INNER JOIN data_dictionary d ON l.`loanType` = d.`valueId`
+		INNER JOIN USER u ON l.`uid` = u.id
+		WHERE d.`typeCode` = 'loanType'
+		and l.id = #{id}
+		</if>
+	</select>
+	<select id="queryLoanAll" resultMap="loans">
+		SELECT l.*,d.valueName name,u.name userName FROM loan l INNER JOIN data_dictionary d ON l.`loanType` = d.`valueId`
+		INNER JOIN USER u ON l.`uid` = u.id
+		WHERE d.`typeCode` = 'loanType'
+	</select>
+	<delete id="deleteLoan">
+		<if test="id != 0">
+			delete * from loan where id =#{id}
+		</if>
+	</delete>
+	<update id="updateLoan" parameterType="Loan">
+		update loan 
+		<trim prefix="set" suffixOverrides="," suffix="where id =#{id}">
+			<if test="uid != 0">uid = #{uid},</if>
+			<if test="loanType != 0">loanType = #{loanType},</if>
+			<if test="money != 0">money = #{money},</if>
+			<if test="repayment != null and repayment != ''">repayment = #{repayment},</if>
+		</trim>
+	</update>
+	<insert id="insertLoan" parameterType="Loan">
+		insert loan values(null,#{uid},#{loanType},#{money},#{repayment})
+	</insert>
+</mapper>

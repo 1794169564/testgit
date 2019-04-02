@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "mybatis-3-mapper.dtd" >
+<mapper namespace="com.z.dao.RecordMapper">
+
+	<resultMap type="Record" id="records">
+		<id property="id" column="id"/>
+		<result property="id" column="id"/>
+		<result property="uName" column="userName" />
+		<result property="typeName" column="typeName"/>
+	</resultMap>
+	<select id="queryRecord" resultMap="records">
+		<if test="id != 0">
+		SELECT r.*,d.valueName typeName,u.name userName FROM record r,data_dictionary d,USER u
+		WHERE r.type = d.valueId AND r.uid = u.id
+		AND d.typeCode = 'payType'
+		and r.id = #{id}
+		</if>
+	</select>
+	<select id="queryRecordAll" resultMap="records">
+		SELECT r.*,d.valueName typeName,u.name userName FROM record r,data_dictionary d,USER u
+		WHERE r.type = d.valueId AND r.uid = u.id
+		AND d.typeCode = 'payType'
+	</select>
+	<delete id="deleteRecord">
+		<if test="id != 0 and id != ''">
+		delete * from record where id = #{id}
+		</if>
+	</delete>
+	<update id="updateRecord" parameterType="Record">
+		update record
+		<trim prefix="set" suffixOverrides="," suffix="where id = #{id}" >
+			<if test="uid != 0">uid = # {uid},</if>
+			<if test="payMoney != 0">payMoney = # {payMoney},</if>
+			<if test="type != 0">type = # {type},</if>
+			<if test="detail != null and detail != ''">detail = # {detail},</if>
+			<if test="createTime != null and createTime != ''">createTime = # {createTime},</if>
+		</trim>
+	</update>
+	<insert id="insertRecord" parameterType="Record">
+		insert record values(null,#{uid},#{payMoney},#{type},#{detail},#{createTime})
+	</insert>
+</mapper>

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "mybatis-3-mapper.dtd" >
+<mapper namespace="com.z.dao.DictionaryMapper">
+
+		<select id="queryDictionary" resultType="Dictionary">
+			select * from data_dictionary where id = #{id}
+		</select>
+		
+		<select id="queryDictionaryAll" resultType="Dictionary">
+			select * from data_dictionary
+		</select>
+		
+		<delete id="deleteDictionary" >
+			<if test="id != null and id != 0">
+				delete from data_dictionary where id = #{id}
+			</if>
+		</delete>
+		
+		<update id="updateDictionary" parameterType="Dictionary" >
+			update data_dictionary
+			<trim prefix="set" suffixOverrides="," suffix="where id=#{id}">
+				<if test="typeCode != null and typeCode != ''">typeCode = #{typeCode},</if>
+				<if test="typeName != null and typeName != ''">typeName = #{typeName},</if>
+				<if test="valueId != 0 ">valueId = #{valueId},</if>
+				<if test="valueName != null and valueName != ''">valueName = #{valueName},</if>
+				<if test="createTime != null ">createTime = #{createTime},</if>
+			</trim>
+		</update>
+		
+		<insert id="insertDictionary" parameterType="Dictionary">
+			insert data_dictionary values(null,#{typeCode},#{typeName},#{valueId},#{valueName},#{createTime})
+		</insert>
+</mapper>
